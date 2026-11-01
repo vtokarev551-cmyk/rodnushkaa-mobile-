@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ВНИМАНИЕ: УСТРОЙСТВО ВЗЛОМАНО</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
+    body { background-color: #04070f; color: #22d3ee; overflow: hidden; height: 100vh; display: flex; flex-direction: column; cursor: crosshair; }
+    #terminal { padding: 20px; font-size: 14px; line-height: 1.4; white-space: pre-wrap; overflow: hidden; flex-grow: 1; }
+    body.alarm { animation: alarmFlash 0.5s infinite; }
+    @keyframes alarmFlash { 0% { background: #04070f; } 50% { background: #300; } 100% { background: #04070f; } }
+    .glitch { animation: glitchAnim 0.2s infinite; }
+    @keyframes glitchAnim { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+    .danger { color: #ff0000; font-weight: bold; font-size: 18px; text-shadow: 0 0 10px red; }
+    #joke-screen { position: fixed; inset: 0; background: #04070f; display: none; align-items: center; justify-content: center; flex-direction: column; text-align: center; z-index: 100; color: #fff; padding: 20px; }
+    #joke-screen h1 { font-size: 40px; color: #22d3ee; margin-bottom: 20px; animation: bounce 1s infinite; font-family: sans-serif; }
+    #joke-screen p { font-size: 20px; font-family: sans-serif; margin-bottom: 30px; font-weight: bold; color: #94a3b8; }
+    .btn { background: #3b82f6; color: white; padding: 15px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 18px; font-family: sans-serif; transition: 0.3s; box-shadow: 0 0 20px rgba(59,130,246,0.5); }
+    .btn:hover { transform: scale(1.1); }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+</style>
+</head>
+<body id="body">
+<div id="terminal"></div>
+<div id="joke-screen">
+    <h1>🤣 ШУТКА! 🤣</h1>
+    <p>Твое устройство в полном порядке.<br>Никто тебя не взломал, расслабься!<br>Это просто сайт Роднушки.</p>
+    <a href="index.html" class="btn">Вернуться на сайт</a>
+</div>
+<script>
+    const terminal = document.getElementById('terminal');
+    const body = document.getElementById('body');
+    const jokeScreen = document.getElementById('joke-screen');
+    const userAgent = navigator.userAgent;
+    let deviceName = "UNKNOWN DEVICE";
+    if (/android/i.test(userAgent)) deviceName = "ANDROID SMARTPHONE";
+    if (/iPhone|iPad|iPod/i.test(userAgent)) deviceName = "APPLE IOS DEVICE";
+    if (/Windows/i.test(userAgent)) deviceName = "WINDOWS PC";
+    if (/Mac/i.test(userAgent)) deviceName = "MACBOOK / IMAC";
+    const scaryTexts = [
+        "[!] УСТАНОВКА СОЕДИНЕНИЯ С СЕРВЕРОМ...", "[!] ПОИСК УЯЗВИМОСТЕЙ...", "[*] ОБНАРУЖЕНО УСТРОЙСТВО: " + deviceName,
+        "[*] ВЗЛОМ ПРОТОКОЛА БЕЗОПАСНОСТИ...", "[!] ДОСТУП К ГАЛЕРЕЕ ПОЛУЧЕН", "[!] ЧТЕНИЕ КОНТАКТОВ...",
+        "[*] IP-АДРЕС СКОМПРОМЕТИРОВАН", "[!] ЗАГРУЗКА ФАЙЛОВ НА СЕРВЕР...", "  ...10%", "  ...50%", "  ...99%",
+        "[!] ДОСТУП К БАНКОВСКИМ ПРИЛОЖЕНИЯМ...", "[X] ВНИМАНИЕ! ВАШЕ УСТРОЙСТВО ЗАБЛОКИРОВАНО.",
+        "[X] ДЛЯ РАЗБЛОКИРОВКИ ОТПРАВЬТЕ 1000 РУБЛЕЙ НА КОШЕЛЕК...", "СИСТЕМА УНИЧТОЖЕНИЯ ЧЕРЕЗ 10 СЕКУНД..."
+    ];
+    let currentLine = 0;
+    function typeLine() {
+        if (currentLine < scaryTexts.length) {
+            const line = document.createElement('div');
+            let text = scaryTexts[currentLine];
+            if (text.includes("[X]") || text.includes("УСТРОЙСТВО")) { line.className = "danger"; }
+            line.innerText = "root@rodnushka:~# " + text;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+            if (text.includes("[X]") || text.includes("УНИЧТОЖЕНИЯ")) { body.classList.add('alarm'); terminal.classList.add('glitch'); }
+            currentLine++;
+            let speed = Math.random() * 300 + 100;
+            if (text.includes("[X]")) speed = 800;
+            setTimeout(typeLine, speed);
+        } else {
+            setTimeout(showJoke, 2000);
+        }
+    }
+    function showJoke() {
+        body.classList.remove('alarm'); terminal.classList.remove('glitch');
+        jokeScreen.style.display = 'flex';
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    }
+    setTimeout(typeLine, 1000);
+</script>
+</body>
+</html>
+
